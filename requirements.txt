@@ -1,1 +1,5 @@
 python-dotenv
+httpx
+pydantic
+win-raw-in; sys_platform == 'win32'
+evdev; sys_platform == 'linux'

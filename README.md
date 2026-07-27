@@ -99,7 +99,19 @@ pip install -r requirements.txt
 
 ### 6. Ejecución del Proyecto
 
-Para iniciar la aplicación principal, ejecute el siguiente comando:
+#### Modo de Detección de Hardware (Escáner QR)
+Antes de ejecutar la aplicación por primera vez, es necesario identificar el identificador único (`Device Path`) de tu escáner QR de Windows para que la aplicación lo intercepte correctamente y no se confunda con tu teclado normal.
+
+Para entrar a este modo de prueba/inicialización, ejecuta:
+```bash
+python main.py --init
+```
+*(También puedes usar `python main.py --test`)*
+
+Al hacerlo, presiona el gatillo del escáner o teclea en él. La consola imprimirá un identificador (ej. `\\?\HID#VID_XXXX&PID_XXXX...`). Copia este identificador y pégalo en tu archivo `.env` en la variable `QR_DEVICE_ID`.
+
+#### Iniciar la Aplicación Principal
+Una vez configurado el `.env`, para iniciar la aplicación con todos sus hilos corriendo en paralelo (IA e Interceptor QR), simplemente ejecuta:
 
 ```bash
 python main.py
