@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-27
+### Added
+- Documentación detallada en el `README.md` sobre la configuración y asignación de permisos (grupo `input`) para el interceptor QR en Linux.
+- Logs de depuración de estado HTTP y texto crudo en `api/client.py` para visualizar fácilmente respuestas de error desde el servidor.
+
+### Changed
+- Mejorado el modo de detección de hardware en Linux (`--init`) para que resuelva y muestre automáticamente rutas persistentes (`/dev/input/by-id/`) en lugar de descriptores volátiles (`eventX`).
+
+### Fixed
+- Soporte para mayúsculas en `LinuxQRStrategy` interceptando y manteniendo el estado de las teclas `SHIFT` (izquierdo y derecho) enviadas por los lectores de códigos de barras/QR.
+- Añadida compatibilidad con la tecla `KEY_END` como señal de finalización y envío de código en `LinuxQRStrategy`, soportando lectores configurados con este sufijo en lugar de `Enter`.
+- Corrección de la ruta del endpoint en el cliente API apuntando ahora a `/api/access/qr` en lugar de la ruta incorrecta.
+- Resolución de un error de respuesta del backend (HTTP 400 Bad Request) añadiendo el header requerido `Accept: application/json` en las peticiones HTTP del cliente.
+
 ## [0.1.0] - 2026-07-27
 
 ### Added

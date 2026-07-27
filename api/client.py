@@ -7,7 +7,7 @@ from .models import QRValidationRequest, QRValidationResponse
 class AccessValidationClient:
     def __init__(self, host: Optional[str] = None):
         self.host = host or os.getenv("HOST", "http://localhost:8000")
-        self.endpoint = f"{self.host.rstrip('/')}/validate/qr"
+        self.endpoint = f"{self.host.rstrip('/')}/api/access/qr"
         
     async def validate_qr(self, hash_code: str, device_id: Optional[str] = None) -> Tuple[bool, Optional[QRValidationResponse]]:
         """
@@ -24,9 +24,14 @@ class AccessValidationClient:
                 response = await client.post(
                     self.endpoint, 
                     json=request_data.model_dump(exclude_none=True),
+                    headers={"Accept": "application/json"},
                     timeout=10.0
                 )
                 
+                # Log de la respuesta cruda para debugging
+                print(f"[API DEBUG] Status Code: {response.status_code}")
+                print(f"[API DEBUG] Raw Response Text: {response.text}")
+
                 # Intentamos parsear a JSON independientemente del status code
                 data = response.json()
                 parsed_response = QRValidationResponse(**data)

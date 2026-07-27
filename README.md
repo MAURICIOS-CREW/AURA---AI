@@ -99,16 +99,34 @@ pip install -r requirements.txt
 
 ### 6. Ejecución del Proyecto
 
-#### Modo de Detección de Hardware (Escáner QR)
-Antes de ejecutar la aplicación por primera vez, es necesario identificar el identificador único (`Device Path`) de tu escáner QR de Windows para que la aplicación lo intercepte correctamente y no se confunda con tu teclado normal.
+#### Configuración y Permisos del Escáner QR (Hardware)
 
-Para entrar a este modo de prueba/inicialización, ejecuta:
-```bash
-python main.py --init
-```
-*(También puedes usar `python main.py --test`)*
+Antes de ejecutar la aplicación, debes configurar el escáner QR en tu archivo `.env` y asegurarte de tener los permisos correctos en tu sistema operativo para que la aplicación intercepte las lecturas sin confundirlas con el teclado estándar.
 
-Al hacerlo, presiona el gatillo del escáner o teclea en él. La consola imprimirá un identificador (ej. `\\?\HID#VID_XXXX&PID_XXXX...`). Copia este identificador y pégalo en tu archivo `.env` en la variable `QR_DEVICE_ID`.
+##### En Windows:
+1. Para encontrar el identificador de tu escáner, ejecuta el modo de prueba/inicialización:
+   ```bash
+   python main.py --init
+   ```
+   *(También puedes usar `python main.py --test`)*
+2. Presiona el gatillo del escáner o teclea en él. La consola imprimirá un identificador (ej. `\\?\HID#VID_XXXX&PID_XXXX...`).
+3. Copia ese identificador y pégalo en tu archivo `.env` en la variable `QR_DEVICE_ID`.
+
+##### En Linux (Debian/Ubuntu):
+En Linux se requiere acceso directo a los eventos del hardware (mediante `evdev`). Por defecto, los usuarios regulares no tienen este permiso.
+
+1. **Otorgar Permisos de Lectura:** Añade tu usuario al grupo `input` ejecutando este comando en la terminal:
+   ```bash
+   sudo usermod -aG input $USER
+   ```
+2. **Aplicar los Cambios (¡Crítico!):** Para que los permisos surtan efecto de forma permanente, debes **reiniciar tu computadora** (o cerrar tu sesión de usuario y volver a entrar).
+   *(Alternativa temporal: Si deseas probar inmediatamente sin reiniciar, ejecuta el comando `newgrp input` en tu terminal activa, y lanza tu aplicación desde esa misma ventana).*
+3. **Identificar el Dispositivo:** Una vez que tengas los permisos aplicados, ejecuta el modo de detección:
+   ```bash
+   python3 main.py --init
+   ```
+4. Aparecerá una lista de dispositivos. El script automáticamente intentará mostrar la ruta persistente (ej. `/dev/input/by-id/usb-Wireless...-event-kbd`).
+5. Copia esa ruta (la que dice `Device Path`) y pégala en tu archivo `.env` en la variable `QR_DEVICE_ID`.
 
 #### Iniciar la Aplicación Principal
 Una vez configurado el `.env`, para iniciar la aplicación con todos sus hilos corriendo en paralelo (IA e Interceptor QR), simplemente ejecuta:
