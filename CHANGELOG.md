@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2]
+### Added
+- Sistema de mensajería interno mediante un Bus de Eventos (`EventBus`) para lograr una arquitectura desacoplada entre componentes.
+- Componente `SerialController` que corre en su propio hilo para manejar la comunicación asíncrona con dispositivos de hardware (ej. microcontrolador ESP32) vía puerto serial.
+- Script `serial_debug.py` para facilitar pruebas directas y depuración de comandos con el puerto serial.
+- Dependencia `pyserial` agregada al archivo `requirements.txt`.
+
+### Changed
+- Modificado `QRInterceptor` para aceptar una instancia de `EventBus` e inyectarle la capacidad de publicar un evento `ACCESS_GRANTED` de manera global al ocurrir una validación exitosa.
+- Archivo `main.py` actualizado para orquestar los nuevos flujos, inicializar el controlador serial y suscribirse a los eventos del escáner para enviar automáticamente el comando `OPEN` a la pluma/puerta.
+- Se agregaron las configuraciones base `SERIAL_PORT` y `SERIAL_BAUDRATE` al archivo `.env.example`.
+
 ## [0.1.1] - 2026-07-27
 ### Added
 - Documentación detallada en el `README.md` sobre la configuración y asignación de permisos (grupo `input`) para el interceptor QR en Linux.
