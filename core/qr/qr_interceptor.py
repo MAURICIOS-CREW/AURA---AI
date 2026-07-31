@@ -5,13 +5,15 @@ import asyncio
 from api.client import AccessValidationClient
 
 class QRInterceptor(threading.Thread):
-    def __init__(self):
+    def __init__(self, event_bus=None):
         super().__init__(daemon=True)
+        self.event_bus = event_bus
         self.running = False
         self.buffer = ""
         self.api_client = AccessValidationClient()
         self.app_identifier = os.getenv("DEVICE_IDENTIFIER", "QR-Device")
         self.loop = None
+
         
         if sys.platform == 'win32':
             from .windows_qr import WindowsQRStrategy
@@ -65,8 +67,13 @@ class QRInterceptor(threading.Thread):
             print(f"[API] Resultado: {response.status.upper()} - {response.message}")
             if response.data:
                 print(f"[API] Info: Invitado: {response.data.guest_name}, Residencia: {response.data.residence_id}")
+            
+            # Si el acceso es exitoso, disparamos un evento global
+            if response.status.lower() == "granted" and self.event_bus:
+                self.event_bus.publish("ACCESS_GRANTED", response.data)
         else:
             print("[API] Error de comunicación al validar el QR.")
+
 
     def stop(self):
         self.running = False
