@@ -108,7 +108,7 @@ Antes de ejecutar la aplicación, debes configurar el escáner QR en tu archivo 
    ```bash
    python main.py --init
    ```
-   *(También puedes usar `python main.py --test`)*
+   *(También puedes usar `python main.py --debug` para entrar al menú interactivo de hardware)*
 2. Presiona el gatillo del escáner o teclea en él. La consola imprimirá un identificador (ej. `\\?\HID#VID_XXXX&PID_XXXX...`).
 3. Copia ese identificador y pégalo en tu archivo `.env` en la variable `QR_DEVICE_ID`.
 
@@ -125,8 +125,27 @@ En Linux se requiere acceso directo a los eventos del hardware (mediante `evdev`
    ```bash
    python3 main.py --init
    ```
+   *(También puedes usar `python3 main.py --debug`)*
 4. Aparecerá una lista de dispositivos. El script automáticamente intentará mostrar la ruta persistente (ej. `/dev/input/by-id/usb-Wireless...-event-kbd`).
 5. Copia esa ruta (la que dice `Device Path`) y pégala en tu archivo `.env` en la variable `QR_DEVICE_ID`.
+
+#### Configuración de la Cámara
+
+Para que el sistema de ráfaga de imágenes funcione correctamente cuando se detecta un vehículo:
+
+1. Ejecuta el modo de depuración interactivo:
+   ```bash
+   python main.py --debug
+   ```
+2. Selecciona la opción **2. Identificar y probar Cámaras**.
+3. Sigue las instrucciones en pantalla. El sistema listará las cámaras disponibles e intentará abrirlas para que puedas identificar visualmente cuál es la correcta. (Presiona `q` para cerrar la ventana de prueba).
+4. Configura tu `.env` con los parámetros deseados, por ejemplo:
+   ```env
+   CAMERA_INDEX=0
+   CAMERA_BURST_COUNT=3
+   CAMERA_BURST_DELAY=1.0
+   CAMERA_SAVE_PATH=./storage/camera
+   ```
 
 #### Iniciar la Aplicación Principal
 Una vez configurado el `.env`, para iniciar la aplicación con todos sus hilos corriendo en paralelo (IA e Interceptor QR), simplemente ejecuta:

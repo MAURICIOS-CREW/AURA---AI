@@ -7,15 +7,15 @@ from dotenv import load_dotenv
 # Cargar variables de entorno antes de importar modulos que dependan de ellas
 load_dotenv()
 
-from core import AIModule, QRInterceptor, run_hardware_detection, SerialController, EventBus
+from core import AIModule, QRInterceptor, run_hardware_menu, SerialController, EventBus
 
 def run_app():
     parser = argparse.ArgumentParser(description="AuraAI - Hilos Concurrentes de IA y QR")
-    parser.add_argument("--test", "--init", action="store_true", help="Inicia el modo de detección de hardware para configurar el escáner QR.")
+    parser.add_argument("--debug", "--init", action="store_true", dest="debug_mode", help="Inicia el menú interactivo para detectar y probar hardware (Cámaras, QR).")
     args = parser.parse_args()
 
-    if args.test:
-        run_hardware_detection()
+    if args.debug_mode:
+        run_hardware_menu()
         sys.exit(0)
 
     print("Iniciando aplicación AuraAI...")
@@ -26,7 +26,7 @@ def run_app():
     event_bus = EventBus()
 
     # Inicializar controlador Serial (corre en su propio hilo)
-    serial_controller = SerialController()
+    serial_controller = SerialController(event_bus=event_bus)
     serial_controller.start()
 
     # Nos suscribimos al evento de acceso concedido para abrir la pluma
@@ -37,8 +37,9 @@ def run_app():
     qr_interceptor.start()
 
     # Inicializar módulo de IA (corre en su propio hilo de SO)
-    ai_module = AIModule()
+    ai_module = AIModule(event_bus=event_bus)
     ai_module.start()
+
     
     try:
         # El hilo principal del programa se queda esperando

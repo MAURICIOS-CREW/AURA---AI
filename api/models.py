@@ -13,3 +13,13 @@ class QRValidationResponse(BaseModel):
     status: str
     message: str
     data: Optional[ValidationData] = None
+
+class PlateValidationRequest(BaseModel):
+    plate: str
+    device_identifier: Optional[str] = None
+
+class PlateValidationResponse(BaseModel):
+    status: str
+    message: str
+    data: Optional[dict] = None
+
